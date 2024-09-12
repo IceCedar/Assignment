@@ -3,7 +3,7 @@ title: "PromblemSet1"
 format: html
 editor: visual
 ---
-GitHub link: [View the assignment on GitHub](https://github.com/IceCedar/Assignment)
+[View the GitHub repository](https://github.com/IceCedar/Assignment)
 
 ## HW1
 

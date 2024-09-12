@@ -3,7 +3,8 @@ title: "PromblemSet1"
 format: html
 editor: visual
 ---
-GitHub link: <https://github.com/IceCedar/Assignment>
+
+[View the GitHub repository](https://github.com/IceCedar/Assignment)
 
 ## HW1
 
@@ -190,8 +191,8 @@ lm1<-lm(Auual_salary~Education+Overall_experience,data=Elhigh)
 
 summary(lm1)
 ```
-Since the p-value of education is 0.00621, which is significant at the 0.01 level. It suggests a significant positive correlation between salary and education level.
 
+Since the p-value of education is 0.00621, which is significant at the 0.01 level. It suggests a significant positive correlation between salary and education level.
 
 ## Problem 3 - Palindromic Numbers
 
