@@ -3,14 +3,9 @@ title: "PromblemSet1"
 format: html
 editor: visual
 ---
+GitHub link: [View the assignment on GitHub](https://github.com/IceCedar/Assignment)
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+## HW1
 
 ## Problem 1 - Wine Data
 
@@ -23,10 +18,10 @@ winedata<-read.table("wine.data",header=FALSE, sep=",")
 winedf<-data.frame(winedata)
 dim(winedf)
 names(winedf)<-c("Class","Alcohol","Malic_acid","Ash","Alcalinity_of_ash","Magnesium","Total_phenols","Flavanoids","Nonflavanoid_phenols","Proanthocyanins","Color_intensity","Hue","OD280/OD315_of_diluted_wines","Proline")
-winedf
+head(winedf,5)
 ```
 
-### b. Check the number of wine within each class is equal to the data reported in "wine.names
+### b. The number of wine within each class is equal to the data reported in "wine.names
 
 ```{r}
 class<-table(winedf$Class)
@@ -36,7 +31,7 @@ class
 
 ### c.use data to answer questions
 
-#### 1.The correlation between alcohol content and color intensity
+#### 1.The correlation between alcohol content and color intensity is 0.5463642.
 
 ```{r}
 cor(winedf$Alcohol,winedf$Color_intensity)
@@ -45,7 +40,8 @@ cor(winedf$Alcohol,winedf$Color_intensity)
 #### 2.Class1 has the highest correlation. Class2 has the lowest correlation.
 
 ```{r}
-correlation<-c()
+#Creater a vector of length=3 to store the correlation of different classes.
+correlation<-vector(length=3)
 for (i in 1:3){
   winedf_byclass<-winedf[winedf$Class==i,]
   correlation[i]<-cor(winedf_byclass$Alcohol,winedf_byclass$Color_intensity)
@@ -61,33 +57,27 @@ correlation
 ##Find the highest color intensity.
 CImax<-max(winedf$Color_intensity)
 alcohol_CImax<-winedf$Alcohol[winedf$Color_intensity==CImax]
-c("alcohol conteny"=alcohol_CImax,"highest color intensity"=CImax)
+c("alcohol content"=alcohol_CImax,"highest color intensity"=CImax)
 ```
 
 #### 4.8.43% wines had a higher content of proanthocyanins compare to ash.
 
 ```{r}
 wineL<-length(winedf$Class)
+
+#filter the data by the criterion that the content of proanthocyanins is larger than ash.
 wineCompare<-length(winedf$Class[winedf$Proanthocyanins>winedf$Ash])
 p<-wineCompare/wineL
-p
+print(paste(p*100,"% wines had a higher content of proanthocyanins compare to ash."))
 ```
 
 ### d.Table for the average value of each variable.
 
 ```{r}
-ComputeAvg<-function(x){
-  average<-c()
-  for (i in 2:14){
-    avg<-mean(x[,i])
-    average<-c(average,avg)
-  }
-  return(average)
-}
-averageTotal<-ComputeAvg(winedf)
-averageClass1<-ComputeAvg(winedf[winedf$Class==1,])
-averageClass2<-ComputeAvg(winedf[winedf$Class==2,])
-averageClass3<-ComputeAvg(winedf[winedf$Class==3,])
+averageTotal<-sapply(winedf,mean)
+averageClass1<-sapply(winedf[winedf$Class==1,],mean)
+averageClass2<-sapply(winedf[winedf$Class==2,],mean)
+averageClass3<-sapply(winedf[winedf$Class==3,],mean)
 
 N<-c("Class","Alcohol","Malic_acid","Ash","Alcalinity_of_ash","Magnesium","Total_phenols","Flavanoids","Nonflavanoid_phenols","Proanthocyanins","Color_intensity","Hue","OD280/OD315_of_diluted_wines","Proline")
 Combine<-matrix(c(averageTotal,averageClass1,averageClass2,averageClass3),nrow=4,byrow=TRUE)
@@ -125,7 +115,7 @@ Since the p-value is smaller than 0.05. The level of phenols between class 1 and
 ```{r}
 askmanager<-read.csv("AskAManager.csv",header=TRUE)
 askmanager_df<-data.frame(askmanager)
-askmanager_df
+head(askmanager_df,5)
 ```
 
 ### b.Simplify the variable names.
@@ -139,9 +129,10 @@ names(askmanager_df)
 
 ```{r}
 #number of observations before restricting
-
 Nbefore<-length(askmanager_df$X)
 AM_US<-askmanager_df[askmanager_df$Currency=="USD",]
+
+#number of observations after restricting
 Nafter<-length(AM_US$X)
 
 print(paste("the number of observations before restricting data is",Nbefore))
@@ -165,10 +156,10 @@ NEltotal<-length(Eltotal$X)
 print(paste("the number of observations after eliminating unreasonble data is",NEltotal))
 ```
 
-### e. Eliminate rows with entremly low and high salaries.
+### e. Eliminate rows with extremly low and high salaries.
 
 ```{r}
-#The minimum wage in the US is 7.25$/hr. Assuming the people work full-time for 40 hours week, the annual salary is $15,080. $15,080 is taken as lower bound.
+#The minimum wage in the US is 7.25$/hr. Assuming the people work #full-time for 40 hours week, the annual salary is $15,080. #$15,080 is taken as lower bound.
 #The annual salary exceeding $150,000 can be deleted.
 
 Ellow<-Eltotal[Eltotal$Auual_salary>15080,]
@@ -183,16 +174,24 @@ print(paste("the number of observations after eliminating unreasonble income is"
 ```{r}
 Elhigh$Education=factor(Elhigh$Education)
 summary(Elhigh$Education)
+
+#label the education level from High school to phD
 levels(Elhigh$Education)=c(1,4,2,5,7,6,3)
+Elhigh$Education<-as.numeric(Elhigh$Education)
 
 Elhigh$Overall_experience=factor(Elhigh$Overall_experience)
 summary(Elhigh$Overall_experience)
+
+#label the overall experience from "5-7 years" to "41 years or more".
 levels(Elhigh$Overall_experience)=c(3,4,5,6,1,2)
+Elhigh$Overall_experience<-as.numeric(Elhigh$Overall_experience)
 
-lm1<-lm(Elhigh$Auual_salary~Elhigh$Education+Elhigh$Overall_experience,data=Elhigh)
+lm1<-lm(Auual_salary~Education+Overall_experience,data=Elhigh)
 
-lm1
+summary(lm1)
 ```
+Since the p-value of education is 0.00621, which is significant at the 0.01 level. It suggests a significant positive correlation between salary and education level.
+
 
 ## Problem 3 - Palindromic Numbers
 
@@ -236,7 +235,10 @@ nextPalindrome<-function(x){
     return(x)
   }else{
     while(temp$isPalindromic!=TRUE){
+      #if the input value isn't palindrome, test whether the next number is palindrome.
       x=x+1
+      
+      #suppress warnings to prevent the repeated occurence.
       suppressWarnings(temp<-isPalindromic(x))
     }
    return(x)
@@ -244,7 +246,7 @@ nextPalindrome<-function(x){
 }
 ```
 
-###c.Find next palindrome for each of following.
+### c.Find next palindrome for each of following.
 
 ```{r}
 nextPalindrome(391)
@@ -253,5 +255,3 @@ nextPalindrome(19272719)
 nextPalindrome(109)
 nextPalindrome(2)
 ```
-
-The `echo: false` option disables the printing of code (only output is displayed).
